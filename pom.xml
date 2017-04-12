@@ -23,37 +23,50 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
+    <profiles>
+        <profile>
+            <id>executable</id>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.bonfig.sensor.bme280.BME280</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
+            <properties>
+                <maven.install.skip>true</maven.install.skip>
+                <maven.deploy.skip>true</maven.deploy.skip>
+            </properties>
+
+            <build>
+                <finalName>${project.artifactId}</finalName>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
                         <configuration>
-                            <createSourcesJar>true</createSourcesJar>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.bonfig.sensor.bme280.BME280</mainClass>
+                                </manifest>
+                            </archive>
                         </configuration>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <createSourcesJar>true</createSourcesJar>
+                                </configuration>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
+    <build>
         <pluginManagement>
             <plugins>
                 <plugin>
