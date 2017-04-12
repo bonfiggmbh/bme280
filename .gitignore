@@ -1,0 +1,9 @@
+**/.classpath
+**/.idea/
+**/.project
+**/.settings/
+**/*.iml
+**/dependency-reduced-pom.xml
+**/target/
+/artifacts/
+/out/
