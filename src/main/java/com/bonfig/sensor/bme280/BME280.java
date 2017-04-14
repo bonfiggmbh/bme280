@@ -163,7 +163,7 @@ public class BME280 implements AutoCloseable {
     public BME280() throws IOException {
         io = new I2CIO(I2CBus.BUS_1, 0x77);
         buffer = ByteBuffer.allocate(256);
-        reset(Mode.FORCED, Sampling.X1, Sampling.X1, Sampling.X1, Filter.OFF, StandbyTime.MS_0_5);
+        reset(Mode.FORCED, Sampling.X16, Sampling.X16, Sampling.X16, Filter.OFF, StandbyTime.MS_0_5);
     }
 
     @Override
@@ -283,8 +283,8 @@ public class BME280 implements AutoCloseable {
         io.read(REGISTER_PRESS_MSB, buffer);
         assert buffer.remaining() == 0;
         buffer.flip();
-        int adcP = buffer.getShort() << 4 | 0x0F & buffer.get();
-        int adcT = buffer.getShort() << 4 | 0x0F & buffer.get();
+        int adcP = buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
+        int adcT = buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
         int adcH = buffer.getShort();
         // System.out.printf("adcT = %d, adcP = %d, adcH = %d%n", adcT, adcP, adcH);
         assert buffer.remaining() == 0;
@@ -311,7 +311,7 @@ public class BME280 implements AutoCloseable {
         return this.temperatureSampling.value << 5 | this.pressureSampling.value << 3 | this.mode.value;
     }
 
-    Sample compensate(int adcT, int adcP, int adcH) {
+    private Sample compensate(int adcT, int adcP, int adcH) {
         int tFine = 0;
         float temperature = Float.NaN;
         float pressure = Float.NaN;
