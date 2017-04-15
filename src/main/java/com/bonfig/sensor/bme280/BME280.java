@@ -283,10 +283,11 @@ public class BME280 implements AutoCloseable {
         io.read(REGISTER_PRESS_MSB, buffer);
         assert buffer.remaining() == 0;
         buffer.flip();
-        int adcP = buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
-        int adcT = buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
-        int adcH = buffer.getShort();
-        // System.out.printf("adcT = %d, adcP = %d, adcH = %d%n", adcT, adcP, adcH);
+        dump(buffer);
+        int adcP = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
+        int adcT = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
+        int adcH = 0xFFFF & buffer.getShort();
+        System.out.printf("adcT = %06x, adcP = %06x, adcH = %04x%n", adcT, adcP, adcH);
         assert buffer.remaining() == 0;
 
         return compensate(adcT, adcP, adcH);
@@ -358,7 +359,7 @@ public class BME280 implements AutoCloseable {
         return new Sample(temperature, pressure, humidity);
     }
 
-    private void wait(int millis) {
+    private static void wait(int millis) {
         try {
             Thread.sleep(millis, 0);
         } catch (InterruptedException e) {
@@ -366,4 +367,15 @@ public class BME280 implements AutoCloseable {
         }
     }
 
+    private static void dump(ByteBuffer buffer) {
+        int position = buffer.position();
+        while (buffer.remaining() > 0) {
+            System.out.printf("%04x", buffer.position());
+            for (int i = 0; i < 8 && buffer.remaining() > 0; i++) {
+                System.out.printf(" %02x", buffer.get());
+            }
+            System.out.println();
+        }
+        buffer.position(position);
+    }
 }
