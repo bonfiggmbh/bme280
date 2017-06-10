@@ -287,7 +287,7 @@ public class BME280 implements AutoCloseable {
         int adcP = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
         int adcT = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
         int adcH = 0xFFFF & buffer.getShort();
-        System.out.printf("adcT = %06x, adcP = %06x, adcH = %04x%n", adcT, adcP, adcH);
+        // System.out.printf("adcT = %06x, adcP = %06x, adcH = %04x%n", adcT, adcP, adcH);
         assert buffer.remaining() == 0;
 
         return compensate(adcT, adcP, adcH);
