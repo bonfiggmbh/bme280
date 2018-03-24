@@ -283,7 +283,7 @@ public class BME280 implements AutoCloseable {
         io.read(REGISTER_PRESS_MSB, buffer);
         assert buffer.remaining() == 0;
         buffer.flip();
-        dump(buffer);
+        // dump(buffer);
         int adcP = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
         int adcT = 0x0FFFF0 & buffer.getShort() << 4 | 0x0F & buffer.get() >> 4;
         int adcH = 0xFFFF & buffer.getShort();
